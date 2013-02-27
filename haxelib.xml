@@ -1,0 +1,6 @@
+<project name="macro-tools" url="https://github.com/dionjwa/macro-tools" license="BSD">
+        <user name="dionjwa"/>
+        <description>A collection of macro utilities</description>
+        <version name="0.1">Initial import</version>
+        <tag v="macro"/>
+</project>
