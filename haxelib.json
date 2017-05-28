@@ -1,0 +1,11 @@
+{
+  "name": "macro-tools",
+  "url" : "https://github.com/dionjwa/haxe-macro-tools",
+  "license": "MIT",
+  "tags": ["macro"],
+  "classPath": "src",
+  "description": "A collection of macro utilities",
+  "version": "0.0.4",
+  "releasenote": "Minor",
+  "contributors": ["dionjwa"]
+}
