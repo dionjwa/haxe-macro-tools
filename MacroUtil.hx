@@ -5,6 +5,62 @@ import haxe.macro.Type;
 class MacroUtil
 {
 	/**
+	 * Given a class expression, returns the class name
+	 * @param  classNameExpr :Expr         Class<Dynamic>
+	 * @return               String of the full class name
+	 */
+	public static function getClassNameFromClassExpr (classNameExpr :Expr) :String
+	{
+		var drillIntoEField = null;
+		var className = "";
+		drillIntoEField = function (e :Expr) :String {
+			switch(e.expr) {
+				case EField(e2, field):
+					return drillIntoEField(e2) + "." + field;
+				case EConst(c):
+					switch(c) {
+						case CIdent(s):
+							return s;
+						case CString(s):
+							return s;
+						default:Context.warning(StdType.enumConstructor(c) + " not handled", Context.currentPos());
+							return "";
+					}
+				default: Context.warning(StdType.enumConstructor(e.expr) + " not handled", Context.currentPos());
+					return "";
+			}
+		}
+		switch(classNameExpr.expr) {
+			case EField(e1, field):
+				className = field;
+				switch(e1.expr) {
+					case EField(_, _):
+						className = drillIntoEField(e1) + "." + className;
+					case EConst(c):
+						switch(c) {
+							case CIdent(s):
+								className = s + "." + className;
+							case CString(s):
+								className = s + "." + className;
+							default:Context.warning(StdType.enumConstructor(c) + " not handled", Context.currentPos());
+						}
+					default: Context.warning(StdType.enumConstructor(e1.expr) + " not handled", Context.currentPos());
+				}
+			case EConst(c):
+				switch(c) {
+					case CIdent(s):
+						className = s;
+					case CString(s):
+						className = s;
+					default:Context.warning(StdType.enumConstructor(c) + " not handled", Context.currentPos());
+				}
+			default: Context.warning(StdType.enumConstructor(classNameExpr.expr) + " not handled", Context.currentPos());
+		}
+
+		return className;
+	}
+
+	/**
 	 * Inserts an expression into the function block, either at the beginning, or the end of the block.
 	 */
 	public static function insertExpressionIntoFunction(exprToAdd :Expr, func :Function, ?beginningOfFunction :Bool = true) :Void
@@ -13,7 +69,6 @@ class MacroUtil
 			// When running in code completion, skip out early
 			return;
 		}
-		
 		if (func.expr != null) {
 			switch(func.expr.expr) {
 				case EBlock(exprs): //exprs : Array<Expr>
@@ -28,7 +83,7 @@ class MacroUtil
 			}
 		}
 	}
-	
+
 	/**
 	 * Searches superclass as well.
 	 */
@@ -37,7 +92,7 @@ class MacroUtil
 		if (cls == null) {
 			return false;
 		}
-		
+
 		if (cls.fields != null) {
 			for (field in cls.fields.get()) {
 				if (field.name == fieldName) {
@@ -45,7 +100,7 @@ class MacroUtil
 				}
 			}
 		}
-		
+
 		return classContainsField(cls.superClass != null ? cls.superClass.t.get() : null, fieldName);
 	}
 
@@ -58,14 +113,14 @@ class MacroUtil
 		if (cls == null) {
 			return null;
 		}
-		
+
 		var fields = [];
 		if (cls.fields.get() != null) {
 			for (field in cls.fields.get()) {
 				fields.push(field);
 			}
 		}
-		
+
 		if (cls.superClass == null) {
 			return fields;
 		} else {
