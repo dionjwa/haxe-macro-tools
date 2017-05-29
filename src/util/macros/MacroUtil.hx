@@ -1,9 +1,16 @@
-import haxe.macro.Expr;
-import haxe.macro.Context;
-import haxe.macro.Type;
+package util.macros;
+
+#if macro
+	import Type as StdType;
+	import haxe.macro.Expr;
+	import haxe.macro.Context;
+	import haxe.macro.Type.ClassType;
+	import haxe.macro.Type.ClassField;
+#end
 
 class MacroUtil
 {
+#if macro
 	/**
 	 * Given a class expression, returns the class name
 	 * @param  classNameExpr :Expr         Class<Dynamic>
@@ -132,4 +139,5 @@ class MacroUtil
 			}
 		}
 	}
+#end
 }
