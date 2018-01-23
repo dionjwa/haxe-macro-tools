@@ -1,6 +1,14 @@
+import Type in StdType;
+
 import haxe.macro.Expr;
 import haxe.macro.Context;
 import haxe.macro.Type;
+import haxe.macro.Context;
+import haxe.macro.Compiler;
+import haxe.macro.ComplexTypeTools;
+import haxe.macro.TypeTools;
+
+import haxe.DynamicAccess;
 
 class MacroUtil
 {
