@@ -1,3 +1,5 @@
+package util.macros;
+
 /**
  * Helper functions for manipulating class and function metadata
  * inside macros.
